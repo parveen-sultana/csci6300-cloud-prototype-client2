@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Navigation from '../Navigation';
 import Auth from '../../modules/Auth';
 import axios from 'axios';
-import { S2_URL_TECHNOLOGY_ADD, S2_URL_TECHNOLOGY, BEARER_HEADER} from '../../constants'
+import { S2_URL_TECHNOLOGY_ADD, S2_URL_TECHNOLOGY_DELETE, S2_URL_TECHNOLOGY, BEARER_HEADER} from '../../constants'
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 class Server2 extends Component {
@@ -28,17 +28,7 @@ class Server2 extends Component {
   }
 
   componentWillMount(){
-    axios.get(S2_URL_TECHNOLOGY,{headers: BEARER_HEADER}
-    ).then((response)=> {
-      console.log("tech data"+response.data);
-      var temp=[];
-      for (var i = 0; i < response.data.length; i++) { 
-        temp.push(response.data[i]["name"]);
-        console.log("data is: "+temp);
-      }
-      this.setState({technologyNames: temp});
-      console.log("data is: "+this.state.technologyNames);
-    })
+    
   }
 
   componentDidMount() {
@@ -74,6 +64,11 @@ class Server2 extends Component {
       this.setState({message: "Some Error"});
     });
     
+  }
+
+  handleView = event => {
+    event.preventDefault();
+    
     axios.get(S2_URL_TECHNOLOGY,{headers: BEARER_HEADER}
     ).then((response)=> {
       console.log("tech data"+response.data);
@@ -87,6 +82,21 @@ class Server2 extends Component {
     })
   }
 
+  handleDelete = event => {
+    event.preventDefault();
+    axios.delete(S2_URL_TECHNOLOGY_DELETE+'/'+this.state.name,
+    {headers: BEARER_HEADER})
+    .then((response) => {
+      console.log("inside resp"+response)
+      this.setState({message: "Technology deleted from the List"})
+    })
+    .catch((error) => {
+      console.log(error);
+      this.setState({message: "Some Error"});
+    });
+    
+  }
+
   render() {
     return(
       <div>
@@ -98,7 +108,13 @@ class Server2 extends Component {
           <Label for="name">Name</Label>
           <Input type="text" name="name" id="name" placeholder="Enter Name of a trending Technology" onChange={this.handleChange}/>
         </FormGroup>
-        <Button onClick={this.handleSubmit}>Add to List</Button>
+        <FormGroup>
+          <Button onClick={this.handleSubmit}>Add to List</Button>
+          {" "}
+          <Button onClick={this.handleView}>View List</Button>
+          {" "}
+          <Button onClick={this.handleDelete}>Delete an item</Button>
+        </FormGroup>
         </Form>
         {this.state.technologyNames.map((name)=> <div>{name}</div>)}
       </div>
