@@ -59,7 +59,7 @@ class Login extends Component {
     .catch((error) => {
       console.log(error);
       this.state.attempts++;
-      this.setState({error: "Invalid Credentials! Please Register yourselves first!"});
+      this.setState({error: "Invalid Credentials! Please Register yourselves first if you are a new user!"});
       if(this.state.attempts>3)
       {
         this.setState({error: "You have entered an incorrect password for 3 times!"});
